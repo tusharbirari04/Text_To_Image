@@ -8,12 +8,13 @@ const DropdownComponent = () => {
   const [guidanceScale, setGuidanceScale] = useState(0);
   const [decodedImage, setDecodedImage] = useState('');
 
+  const url= 'http://b15d-35-240-244-154.ngrok.io'
   useEffect(() => {
    
     const getModelVersion = async() => {
       try{
-        const url = 'http://ffce-34-143-135-119.ngrok.io/model_version'
-        const response = await axios.get(url);
+        const getUrl = `${url}/model_version`
+        const response = await axios.get(getUrl);
         const data=response.data
         console.log(data);
        // console.log(response);
@@ -50,9 +51,8 @@ const DropdownComponent = () => {
       prompt:textInput,
       guidance_scale:guidanceScale
     };
-    
-    const postUrl = 'http://ffce-34-143-135-119.ngrok.io'
-     axios.post(`${postUrl}/${modelId}/select`,requestBody)
+  
+     axios.post(`${url}/${modelId}/select`,requestBody)
       .then(response => {
         const base64Image = response.data.image;
         setDecodedImage(base64Image);
@@ -60,30 +60,49 @@ const DropdownComponent = () => {
   }
 
   return (
-    <div>
-      <h2>Select a Model Path</h2>
-      <select value={selectedPath} onChange={handleDropdownChange}>
+    <>
+    <div className="flex justify-center">
+    <h2 class="text-2xl ml-12 font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">Fashion Difffusion System</h2>
+    </div>
+    <div className="mt-20  flex justify-center">
+      <div className="mr-20 flex-col">
+
+      <label className=" font-bold">Select a Model :</label>
+      <select class="bg-gray-50 border  mt-4 ml-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500  p-2.5 dark:bg-gray-200 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500" value={selectedPath} onChange={handleDropdownChange}>
         {modelPaths.map(x => 
         <option key={x.id}>{x.path}</option>
-          )}
+        )}
       </select>
       <br/><br/>
-      <form onSubmit={handleFormSubmit}>  
-        <label>
-          Text Input: 
-          <input type="text" value={textInput} onChange={handleTextInputChange}></input>
-        </label> 
+      <form className= "flex flex-col" onSubmit={handleFormSubmit}>  
+          <div className= "flex flex-row">
+            
+        <label className='mt-2 font-bold'>
+          Text Input : &nbsp; 
+          </label> 
+             <textarea class="h-full w-4/5 rounded-md mt-3  ml-5 border-0  text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"  type="text" value={textInput} onChange={handleTextInputChange}></textarea>
+          </div>
         <br/>
         <br/>
-        <label>
-          Guidance Scale: 
-          <input type="number" value={guidanceScale} onChange={handleGuideancesChange}></input>
+        <label className=' font-bold'>
+          Guidance Scale :  &nbsp;
+          <input class="flex-1 ml-3 rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="0.00"type="number" value={guidanceScale} onChange={handleGuideancesChange}></input>
         </label>
         <br/>
-        <button type="submit">Submit</button>
+        <button className=" ml-8 bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" type="submit">Submit</button>
       </form>
+        </div>
+      <div className="ml-20 float-right">
+        <div className="flex flex-col">
+
+        <label className='font-bold'>Generated Image</label>
+        <div className='mt-2 border-3'>
       {decodedImage && <img src={`data:image/png;base64,${decodedImage}`} alt="Decoded" />}
+          </div>
+      </div>
+        </div>
     </div>
+        </>
   );
 };
 
